@@ -9,7 +9,7 @@ module.exports = {
     // bail immediately if this isn’t a production build
     if (process.env.CONTEXT !== 'production') return;
 
-    if (await utils.cache.restore('~/.cache/Cypress')) {
+    if (await utils.cache.restore('.cache/Cypress')) {
       return;
     } else {
       console.log('no Cypress cache found — installing it now');
@@ -91,12 +91,12 @@ module.exports = {
       );
     }
 
-    if (await utils.cache.restore('~/.cache/Cypress')) {
+    if (await utils.cache.save('.cache/Cypress')) {
       console.log('cached the Cypress binary for future builds');
     } else {
-      utils.build.failPlugin('the Cypress cache is missing', {
-        error: new Error(path.resolve('~')),
-      });
+      console.log(
+        `unable to find a Cypress binary at ${path.resolve('.cache/Cypress')}`,
+      );
     }
   },
 };
