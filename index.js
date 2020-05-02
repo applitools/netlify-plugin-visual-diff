@@ -38,6 +38,7 @@ module.exports = {
       env: {
         APPLITOOLS_BATCH_ID: 'visual diff',
         PAGES_TO_CHECK: builtPages,
+        CYPRESS_CACHE_FOLDER: path.resolve(PUBLISH_DIR, '..', 'node_modules'),
       },
       record: false,
     });
