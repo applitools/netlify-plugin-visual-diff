@@ -9,7 +9,7 @@ module.exports = {
     // bail immediately if this isn’t a production build
     if (process.env.CONTEXT !== 'production') return;
 
-    if (await utils.cache.restore('../.cache/Cypress')) {
+    if (await utils.cache.restore('../../buildhome/.cache/Cypress')) {
       return;
     } else {
       console.log('no Cypress cache found — installing it now');
@@ -91,7 +91,7 @@ module.exports = {
       );
     }
 
-    if (await utils.cache.save('../.cache/Cypress')) {
+    if (await utils.cache.save('../../buildhome/.cache/Cypress')) {
       console.log('cached the Cypress binary for future builds');
     } else {
       console.log(
