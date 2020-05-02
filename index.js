@@ -5,6 +5,14 @@ const fs = require('fs-extra');
 const glob = require('glob');
 
 module.exports = {
+  onPreBuild: async ({ utils }) => {
+    if (await utils.cache.restore('~/.cache/Cypress')) {
+      return;
+    } else {
+      console.log('no Cypress cache found — installing it now');
+      await utils.run('cypress', ['install'], { stdio: 'ignore' });
+    }
+  },
   onPostBuild: async ({ constants: { PUBLISH_DIR }, utils }) => {
     if (!process.env.APPLITOOLS_API_KEY) {
       utils.build.failPlugin(
@@ -75,6 +83,14 @@ module.exports = {
           error: new Error(`Review the detected changes at \n${url}`),
         },
       );
+    }
+
+    if (await utils.cache.restore('~/.cache/Cypress')) {
+      console.log('cached the Cypress binary for future builds');
+    } else {
+      utils.build.failPlugin('the Cypress cache is missing', {
+        error: new Error(path.resolve('~')),
+      });
     }
   },
 };
