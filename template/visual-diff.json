@@ -1,0 +1,5 @@
+{
+  "integrationFolder": "./node_modules/netlify-plugin-visual-diff/template/visual-diff/integration",
+  "pluginsFile": "./node_modules/netlify-plugin-visual-diff/template/visual-diff/plugins",
+  "supportFile": "./node_modules/netlify-plugin-visual-diff/template/visual-diff/support"
+}
