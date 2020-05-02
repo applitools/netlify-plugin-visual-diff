@@ -6,6 +6,9 @@ const glob = require('glob');
 
 module.exports = {
   onPreBuild: async ({ utils }) => {
+    // bail immediately if this isn’t a production build
+    if (process.env.CONTEXT !== 'production') return;
+
     if (await utils.cache.restore('~/.cache/Cypress')) {
       return;
     } else {
@@ -14,6 +17,9 @@ module.exports = {
     }
   },
   onPostBuild: async ({ constants: { PUBLISH_DIR }, utils }) => {
+    // bail immediately if this isn’t a production build
+    if (process.env.CONTEXT !== 'production') return;
+
     if (!process.env.APPLITOOLS_API_KEY) {
       utils.build.failPlugin(
         'No Applitools API key found! Set APPLITOOLS_API_KEY with your API key from https://eyes.applitools.com',

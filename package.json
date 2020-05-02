@@ -23,6 +23,7 @@
     "@applitools/eyes-cypress": "^3.10.3",
     "cypress": "^4.5.0",
     "ecstatic": "^4.1.4",
+    "fs-extra": "^9.0.0",
     "glob": "^7.1.6"
   }
 }

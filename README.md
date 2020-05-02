@@ -27,6 +27,4 @@ It’s probably not right for every project, but it’s great if you work on a c
 
 ## Known Issues
 
-- [ ] Each run currently requires clearing the cache — this will be remedied ASAP (need to use the caching utils)
-- [ ] There’s no way to specify which context is checked — should probably only be master to avoid making this frustrating to use
 - [ ] There’s no way to ignore it — not sure if there should be, but it’s worth discussing
