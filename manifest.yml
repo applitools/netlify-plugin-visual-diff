@@ -1,1 +1,8 @@
 name: netlify-plugin-visual-diff
+inputs:
+  - name: browser
+    description: Configure which browser(s) to test in. See https://www.npmjs.com/package/@applitools/eyes-cypress#configuring-the-browser
+    default:
+      - width: 800
+        height: 600
+        name: chrome

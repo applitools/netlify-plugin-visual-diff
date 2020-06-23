@@ -1,12 +1,16 @@
 describe('check the site for visual regressions', () => {
-  beforeEach(() => {
+  before(() => {
     cy.eyesOpen({
-      appName: process.env.URL || 'localhost test',
-      batchName: Cypress.env('APPLITOOLS_BATCH_ID'),
+      appName: process.env.SITE_NAME || 'localhost-test',
+      batchName: process.env.SITE_NAME || 'localhost-test',
+      testName: 'Visual Diff',
+      // TODO add browser support in plugin inputs
+      // https://www.npmjs.com/package/@applitools/eyes-cypress#configuring-the-browser
+      browser: JSON.parse(Cypress.env('APPLITOOLS_BROWSERS')),
     });
   });
 
-  afterEach(() => {
+  after(() => {
     cy.eyesClose();
   });
 

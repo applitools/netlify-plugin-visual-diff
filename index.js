@@ -9,14 +9,14 @@ module.exports = {
     // bail immediately if this isn’t a production build
     if (process.env.CONTEXT !== 'production') return;
 
-    if (await utils.cache.restore('../../buildhome/.cache/Cypress')) {
-      return;
-    } else {
-      console.log('no Cypress cache found — installing it now');
-      await utils.run('cypress', ['install'], { stdio: 'ignore' });
-    }
+    // if (await utils.cache.restore('../../buildhome/.cache/Cypress')) {
+    //   return;
+    // } else {
+    //   console.log('no Cypress cache found — installing it now');
+    await utils.run('cypress', ['install'], { stdio: 'ignore' });
+    // }
   },
-  onPostBuild: async ({ constants: { PUBLISH_DIR }, utils }) => {
+  onPostBuild: async ({ constants: { PUBLISH_DIR }, utils, inputs }) => {
     // bail immediately if this isn’t a production build
     if (process.env.CONTEXT !== 'production') return;
 
@@ -51,6 +51,7 @@ module.exports = {
       config: { baseUrl: `http://localhost:${port}` },
       env: {
         APPLITOOLS_BATCH_ID: 'visual diff',
+        APPLITOOLS_BROWSERS: JSON.stringify(inputs.browser),
         PAGES_TO_CHECK: builtPages,
         CYPRESS_CACHE_FOLDER: path.resolve(PUBLISH_DIR, '..', 'node_modules'),
       },
@@ -91,14 +92,14 @@ module.exports = {
       );
     }
 
-    if (await utils.cache.save('../../buildhome/.cache/Cypress')) {
-      console.log('cached the Cypress binary for future builds');
-    } else {
-      console.log(
-        `unable to find a Cypress binary at ${path.resolve(
-          '../.cache/Cypress',
-        )}`,
-      );
-    }
+    // if (await utils.cache.save('../../buildhome/.cache/Cypress')) {
+    //   console.log('cached the Cypress binary for future builds');
+    // } else {
+    //   console.log(
+    //     `unable to find a Cypress binary at ${path.resolve(
+    //       '../.cache/Cypress',
+    //     )}`,
+    //   );
+    // }
   },
 };
