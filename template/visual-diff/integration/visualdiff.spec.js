@@ -1,14 +1,17 @@
 describe('check the site for visual regressions', () => {
-  before(() => {
+  beforeEach(() => {
     cy.eyesOpen({
       appName: process.env.SITE_NAME || 'localhost-test',
       batchName: process.env.SITE_NAME || 'localhost-test',
       testName: 'Visual Diff',
       browser: JSON.parse(Cypress.env('APPLITOOLS_BROWSERS')),
+      failBuildOnDiff: Boolean(Cypress.env('APPLITOOLS_FAIL_BUILD_ON_DIFF')),
+      serverUrl: Cypress.env('APPLITOOLS_SERVER_URL'),
+      concurrency: Number(Cypress.env('APPLITOOLS_CONCURRENCY')),
     });
   });
 
-  after(() => {
+  afterEach(() => {
     cy.eyesClose();
   });
 
@@ -17,7 +20,13 @@ describe('check the site for visual regressions', () => {
   pagesToCheck.forEach((route) => {
     it(`check ${route} for visual changes`, () => {
       cy.visit(route);
-      cy.eyesCheckWindow();
+      cy.eyesCheckWindow({
+        tag: route,
+        // TODO figure out why this setting fails with "left is not a number"
+        // ignore: {
+        //   selector: Cypress.env('APPLITOOLS_IGNORE_SELECTOR'),
+        // },
+      });
     });
   });
 });
