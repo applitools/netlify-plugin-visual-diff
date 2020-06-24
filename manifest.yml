@@ -2,7 +2,7 @@ name: netlify-plugin-visual-diff
 inputs:
   - name: serverUrl
     description: The Eyes server to use for your tests
-    default: 'https://eyesapi.applitools.com'
+    default: https://eyesapi.applitools.com
   - name: failBuildOnDiff
     description: If a diff is detected, whether or not to prevent the site from deploying.
     default: true

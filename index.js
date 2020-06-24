@@ -48,7 +48,9 @@ module.exports = {
         APPLITOOLS_BROWSERS: JSON.stringify(inputs.browser),
         APPLITOOLS_FAIL_BUILD_ON_DIFF: inputs.failBuildOnDiff,
         APPLITOOLS_SERVER_URL: inputs.serverUrl,
-        APPLITOOLS_IGNORE_SELECTOR: inputs.ignoreSelector || null,
+        APPLITOOLS_IGNORE_SELECTOR: inputs.ignoreSelector
+          ? inputs.ignoreSelector.split(',').map((selector) => ({ selector }))
+          : [],
         APPLITOOLS_CONCURRENCY: inputs.concurrency,
         PAGES_TO_CHECK: builtPages,
         CYPRESS_CACHE_FOLDER: path.resolve(PUBLISH_DIR, '..', 'node_modules'),
@@ -72,7 +74,7 @@ module.exports = {
       });
     }
 
-    if (results.totalFailed) {
+    if (inputs.failBuildOnDiff && results.totalFailed) {
       // take just the first run
       const run = results.runs.find(Boolean);
 
