@@ -130,7 +130,7 @@ The default configuration, if none is specified, is:
     ignoreSelector = "" # There is no null in TOML, but if there were, then it would be null
     failBuildOnDiff = true
     concurrency = 1
-    [[plugin.inputs.browser]]
+    [[plugins.inputs.browser]]
       name = "chrome"
       width = 1024
       height = 768
