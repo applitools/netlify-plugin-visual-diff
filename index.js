@@ -49,7 +49,9 @@ module.exports = {
         APPLITOOLS_FAIL_BUILD_ON_DIFF: inputs.failBuildOnDiff,
         APPLITOOLS_SERVER_URL: inputs.serverUrl,
         APPLITOOLS_IGNORE_SELECTOR: inputs.ignoreSelector
-          ? inputs.ignoreSelector.split(',').map((selector) => ({ selector }))
+          ? inputs.ignoreSelector
+              .split(',')
+              .map((selector) => ({ selector: selector.trim() }))
           : [],
         APPLITOOLS_CONCURRENCY: inputs.concurrency,
         PAGES_TO_CHECK: builtPages,
