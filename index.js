@@ -9,14 +9,9 @@ module.exports = {
     // bail immediately if this isn’t a production build
     if (process.env.CONTEXT !== 'production') return;
 
-    if (await utils.cache.restore('../../buildhome/.cache/Cypress')) {
-      return;
-    } else {
-      console.log('no Cypress cache found — installing it now');
-      await utils.run('cypress', ['install'], { stdio: 'ignore' });
-    }
+    await utils.run('cypress', ['install'], { stdio: 'ignore' });
   },
-  onPostBuild: async ({ constants: { PUBLISH_DIR }, utils }) => {
+  onPostBuild: async ({ constants: { PUBLISH_DIR }, utils, inputs }) => {
     // bail immediately if this isn’t a production build
     if (process.env.CONTEXT !== 'production') return;
 
@@ -50,7 +45,15 @@ module.exports = {
       configFile: 'visual-diff.json',
       config: { baseUrl: `http://localhost:${port}` },
       env: {
-        APPLITOOLS_BATCH_ID: 'visual diff',
+        APPLITOOLS_BROWSERS: JSON.stringify(inputs.browser),
+        APPLITOOLS_FAIL_BUILD_ON_DIFF: inputs.failBuildOnDiff,
+        APPLITOOLS_SERVER_URL: inputs.serverUrl,
+        APPLITOOLS_IGNORE_SELECTOR: inputs.ignoreSelector
+          ? inputs.ignoreSelector
+              .split(',')
+              .map((selector) => ({ selector: selector.trim() }))
+          : [],
+        APPLITOOLS_CONCURRENCY: inputs.concurrency,
         PAGES_TO_CHECK: builtPages,
         CYPRESS_CACHE_FOLDER: path.resolve(PUBLISH_DIR, '..', 'node_modules'),
       },
@@ -73,7 +76,7 @@ module.exports = {
       });
     }
 
-    if (results.totalFailed) {
+    if (inputs.failBuildOnDiff && results.totalFailed) {
       // take just the first run
       const run = results.runs.find(Boolean);
 
@@ -88,16 +91,6 @@ module.exports = {
         {
           error: new Error(`Review the detected changes at \n${url}`),
         },
-      );
-    }
-
-    if (await utils.cache.save('../../buildhome/.cache/Cypress')) {
-      console.log('cached the Cypress binary for future builds');
-    } else {
-      console.log(
-        `unable to find a Cypress binary at ${path.resolve(
-          '../.cache/Cypress',
-        )}`,
       );
     }
   },

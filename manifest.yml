@@ -1,1 +1,20 @@
 name: netlify-plugin-visual-diff
+inputs:
+  - name: serverUrl
+    description: The Eyes server to use for your tests
+    default: https://eyesapi.applitools.com
+  - name: failBuildOnDiff
+    description: If a diff is detected, whether or not to prevent the site from deploying.
+    default: true
+  - name: ignoreSelector
+    description: If you want to ignore part(s) of pages in visual diffs, add CSS selectors for them here, separated by commas.
+    default: ''
+  - name: browser
+    description: Configure which browser(s) to test in. See https://www.npmjs.com/package/@applitools/eyes-cypress#configuring-the-browser
+    default:
+      - width: 1024
+        height: 768
+        name: chrome
+  - name: concurrency
+    description: Enable higher concurrency for faster testing. See https://www.npmjs.com/package/@applitools/eyes-cypress#concurrency
+    default: 1

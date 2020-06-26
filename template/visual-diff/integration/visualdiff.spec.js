@@ -1,8 +1,12 @@
 describe('check the site for visual regressions', () => {
   beforeEach(() => {
     cy.eyesOpen({
-      appName: process.env.URL || 'localhost test',
-      batchName: Cypress.env('APPLITOOLS_BATCH_ID'),
+      appName: process.env.SITE_NAME || 'localhost-test',
+      batchName: process.env.SITE_NAME || 'localhost-test',
+      browser: JSON.parse(Cypress.env('APPLITOOLS_BROWSERS')),
+      failBuildOnDiff: Boolean(Cypress.env('APPLITOOLS_FAIL_BUILD_ON_DIFF')),
+      serverUrl: Cypress.env('APPLITOOLS_SERVER_URL'),
+      concurrency: Number(Cypress.env('APPLITOOLS_CONCURRENCY')),
     });
   });
 
@@ -13,9 +17,13 @@ describe('check the site for visual regressions', () => {
   // TODO can we loop through all generated pages and check?
   const pagesToCheck = Cypress.env('PAGES_TO_CHECK');
   pagesToCheck.forEach((route) => {
-    it(`check ${route} for visual changes`, () => {
+    it(`Visual Diff for ${route}`, () => {
+      const selector = Cypress.env('APPLITOOLS_IGNORE_SELECTOR');
       cy.visit(route);
-      cy.eyesCheckWindow();
+      cy.eyesCheckWindow({
+        tag: route,
+        ignore: Cypress.env('APPLITOOLS_IGNORE_SELECTOR'),
+      });
     });
   });
 });
