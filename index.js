@@ -20,6 +20,12 @@ module.exports = {
         'No Applitools API key found! Set APPLITOOLS_API_KEY with your API key from https://eyes.applitools.com',
       );
     }
+    
+    const applitoolsConfig = {
+      showLogs: true
+    }
+    
+    fs.writeFile(path.resolve(PUBLISH_DIR, '..', 'applitools.config.js'), `module.exports = ${JSON.stringify(applitoolsConfig)}`, 'utf8');
 
     const port = 9919;
     const server = http
