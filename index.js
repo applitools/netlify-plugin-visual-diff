@@ -4,6 +4,9 @@ const ecstatic = require('ecstatic');
 const fs = require('fs-extra');
 const glob = require('glob');
 
+const APPLITOOLS_CONFIG = 'applitools.config.js';
+const VISUAL_DIFF = 'visual-diff';
+
 module.exports = {
   onPreBuild: async ({ utils }) => {
     // bail immediately if this isn’t a production build
@@ -20,27 +23,24 @@ module.exports = {
         'No Applitools API key found! Set APPLITOOLS_API_KEY with your API key from https://eyes.applitools.com',
       );
     }
-    
-    const applitoolsConfig = {
-      showLogs: true
-    }
-    
-    fs.writeFile(path.resolve(PUBLISH_DIR, '..', 'applitools.config.js'), `module.exports = ${JSON.stringify(applitoolsConfig)}`, 'utf8');
 
     const port = 9919;
     const server = http
       .createServer(ecstatic({ root: `${PUBLISH_DIR}` }))
       .listen(port);
 
-    fs.copy(
-      path.resolve(__dirname, 'template/visual-diff.json'),
-      path.resolve(PUBLISH_DIR, '..', 'visual-diff.json'),
-    );
+    const applitoolsConfig = {
+      showLogs: true,
+    };
 
-    fs.copy(
-      path.resolve(__dirname, 'template/visual-diff'),
-      path.resolve(PUBLISH_DIR, '..', 'visual-diff'),
-    );
+    await Promise.all([
+      fs.writeFile(
+        APPLITOOLS_CONFIG,
+        `module.exports = ${JSON.stringify(applitoolsConfig)}`,
+        'utf8',
+      ),
+      fs.copy(`${__dirname}/template/${VISUAL_DIFF}`, VISUAL_DIFF),
+    ]);
 
     const cypress = require('cypress');
     const builtPages = glob
@@ -48,9 +48,10 @@ module.exports = {
       .map((p) => path.dirname(p.replace(PUBLISH_DIR, '')));
 
     const results = await cypress.run({
-      configFile: 'visual-diff.json',
-      config: { baseUrl: `http://localhost:${port}` },
+      configFile: `${VISUAL_DIFF}/visual-diff.json`,
+      config: { baseUrl: `http://localhost:${port}`, video: false },
       env: {
+        SITE_NAME: process.env.SITE_NAME || 'localhost-test',
         APPLITOOLS_BROWSERS: JSON.stringify(inputs.browser),
         APPLITOOLS_FAIL_BUILD_ON_DIFF: inputs.failBuildOnDiff,
         APPLITOOLS_SERVER_URL: inputs.serverUrl,
@@ -61,7 +62,7 @@ module.exports = {
           : [],
         APPLITOOLS_CONCURRENCY: inputs.concurrency,
         PAGES_TO_CHECK: builtPages,
-        CYPRESS_CACHE_FOLDER: path.resolve(PUBLISH_DIR, '..', 'node_modules'),
+        CYPRESS_CACHE_FOLDER: 'node_modules',
       },
       record: false,
     });
@@ -99,5 +100,13 @@ module.exports = {
         },
       );
     }
+  },
+  onEnd: async () => {
+    // cleanup transient files
+    await Promise.all([
+      fs.remove(APPLITOOLS_CONFIG),
+      fs.remove(VISUAL_DIFF),
+      fs.remove('cypress'),
+    ]);
   },
 };
