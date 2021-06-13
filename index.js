@@ -62,7 +62,7 @@ module.exports = {
           : [],
         APPLITOOLS_CONCURRENCY: inputs.concurrency,
         PAGES_TO_CHECK: builtPages,
-        CYPRESS_CACHE_FOLDER: 'node_modules',
+        CYPRESS_CACHE_FOLDER: './node_modules/CypressBinary',
       },
       record: false,
     });
