@@ -4,15 +4,54 @@ const ecstatic = require('ecstatic');
 const fs = require('fs-extra');
 const glob = require('glob');
 
-const APPLITOOLS_CONFIG = 'applitools.config.js';
-const VISUAL_DIFF = 'visual-diff';
+const createEnvFile = async ({ inputs, builtPages }) => {
+  await fs.writeJSON(`${__dirname}/cypress.env.json`, {
+    SITE_NAME: process.env.SITE_NAME || 'localhost-test',
+    APPLITOOLS_BROWSERS: JSON.stringify(inputs.browser),
+    APPLITOOLS_FAIL_BUILD_ON_DIFF: inputs.failBuildOnDiff,
+    APPLITOOLS_SERVER_URL: inputs.serverUrl,
+    APPLITOOLS_IGNORE_SELECTOR: inputs.ignoreSelector
+      ? inputs.ignoreSelector
+          .split(',')
+          .map((selector) => ({ selector: selector.trim() }))
+      : [],
+    APPLITOOLS_CONCURRENCY: inputs.concurrency,
+    PAGES_TO_CHECK: builtPages,
+    CYPRESS_CACHE_FOLDER: './node_modules/CypressBinary',
+  });
+};
+
+const runCypress = async ({ utils, port }) => {
+  await utils.run(
+    'node',
+    ['cypress.js', 'run', '--config', `baseUrl=http://localhost:${port}`],
+    { cwd: __dirname },
+  );
+
+  return await fs.readJSON(`${__dirname}/results.json`);
+};
+
+const shutdownServer = async ({ server }) => {
+  await new Promise((resolve, reject) => {
+    server.close((err) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve();
+    });
+  });
+};
 
 module.exports = {
   onPreBuild: async ({ utils }) => {
     // bail immediately if this isn’t a production build
     if (process.env.CONTEXT !== 'production') return;
 
-    await utils.run('cypress', ['install'], { stdio: 'ignore' });
+    await utils.run('cypress', ['install'], {
+      stdio: 'ignore',
+      cwd: __dirname,
+    });
   },
   onPostBuild: async ({ constants: { PUBLISH_DIR }, utils, inputs }) => {
     // bail immediately if this isn’t a production build
@@ -29,53 +68,13 @@ module.exports = {
       .createServer(ecstatic({ root: `${PUBLISH_DIR}` }))
       .listen(port);
 
-    const applitoolsConfig = {
-      showLogs: true,
-    };
-
-    await Promise.all([
-      fs.writeFile(
-        APPLITOOLS_CONFIG,
-        `module.exports = ${JSON.stringify(applitoolsConfig)}`,
-        'utf8',
-      ),
-      fs.copy(`${__dirname}/template/${VISUAL_DIFF}`, VISUAL_DIFF),
-    ]);
-
-    const cypress = require('cypress');
     const builtPages = glob
       .sync(`${PUBLISH_DIR}/**/*.html`)
       .map((p) => path.dirname(p.replace(PUBLISH_DIR, '')));
 
-    const results = await cypress.run({
-      configFile: `${VISUAL_DIFF}/visual-diff.json`,
-      config: { baseUrl: `http://localhost:${port}`, video: false },
-      env: {
-        SITE_NAME: process.env.SITE_NAME || 'localhost-test',
-        APPLITOOLS_BROWSERS: JSON.stringify(inputs.browser),
-        APPLITOOLS_FAIL_BUILD_ON_DIFF: inputs.failBuildOnDiff,
-        APPLITOOLS_SERVER_URL: inputs.serverUrl,
-        APPLITOOLS_IGNORE_SELECTOR: inputs.ignoreSelector
-          ? inputs.ignoreSelector
-              .split(',')
-              .map((selector) => ({ selector: selector.trim() }))
-          : [],
-        APPLITOOLS_CONCURRENCY: inputs.concurrency,
-        PAGES_TO_CHECK: builtPages,
-        CYPRESS_CACHE_FOLDER: './node_modules/CypressBinary',
-      },
-      record: false,
-    });
-
-    await new Promise((resolve, reject) => {
-      server.close((err) => {
-        if (err) {
-          return reject(err);
-        }
-
-        resolve();
-      });
-    });
+    await createEnvFile({ inputs, builtPages });
+    const results = await runCypress({ utils, port });
+    await shutdownServer({ server });
 
     if (results.failures) {
       utils.build.failPlugin(`Cypress had a problem`, {
@@ -103,10 +102,12 @@ module.exports = {
   },
   onEnd: async () => {
     // cleanup transient files
-    await Promise.all([
-      fs.remove(APPLITOOLS_CONFIG),
-      fs.remove(VISUAL_DIFF),
-      fs.remove('cypress'),
-    ]);
+    await Promise.all(
+      [
+        `${__dirname}/cypress.env.json`,
+        `${__dirname}/cypress`,
+        `${__dirname}/results.json`,
+      ].map((pathToRemove) => fs.remove(pathToRemove)),
+    );
   },
 };

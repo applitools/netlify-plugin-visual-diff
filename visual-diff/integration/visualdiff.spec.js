@@ -18,7 +18,6 @@ describe('check the site for visual regressions', () => {
   const pagesToCheck = Cypress.env('PAGES_TO_CHECK');
   pagesToCheck.forEach((route) => {
     it(`Visual Diff for ${route}`, () => {
-      const selector = Cypress.env('APPLITOOLS_IGNORE_SELECTOR');
       cy.visit(route);
       cy.eyesCheckWindow({
         tag: route,
