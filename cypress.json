@@ -1,5 +1,6 @@
 {
   "integrationFolder": "visual-diff/integration",
   "pluginsFile": "visual-diff/plugins",
-  "supportFile": "visual-diff/support"
+  "supportFile": "visual-diff/support",
+  "video": false
 }

@@ -20,10 +20,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@applitools/eyes-cypress": "^3.10.3",
-    "cypress": "^4.5.0",
+    "@applitools/eyes-cypress": "^3.22.0",
+    "cypress": "^7.5.0",
     "ecstatic": "^4.1.4",
-    "fs-extra": "^9.0.0",
-    "glob": "^7.1.6"
+    "fs-extra": "^10.0.0",
+    "glob": "^7.1.7"
+  },
+  "engines": {
+    "node": ">=12.0.0"
   }
 }
