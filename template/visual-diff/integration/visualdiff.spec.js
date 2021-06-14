@@ -1,8 +1,8 @@
 describe('check the site for visual regressions', () => {
   beforeEach(() => {
     cy.eyesOpen({
-      appName: process.env.SITE_NAME || 'localhost-test',
-      batchName: process.env.SITE_NAME || 'localhost-test',
+      appName: Cypress.env('SITE_NAME'),
+      batchName: Cypress.env('SITE_NAME'),
       browser: JSON.parse(Cypress.env('APPLITOOLS_BROWSERS')),
       failBuildOnDiff: Boolean(Cypress.env('APPLITOOLS_FAIL_BUILD_ON_DIFF')),
       serverUrl: Cypress.env('APPLITOOLS_SERVER_URL'),
