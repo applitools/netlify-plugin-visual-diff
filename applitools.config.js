@@ -1,3 +1,1 @@
-module.exports = {
-  showLogs: true,
-};
+module.exports = {};
