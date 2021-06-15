@@ -70,7 +70,10 @@ module.exports = {
 
     const builtPages = glob
       .sync(`${PUBLISH_DIR}/**/*.html`)
-      .map((p) => path.dirname(p.replace(PUBLISH_DIR, '')));
+      .map((p) => p.replace(PUBLISH_DIR, ''));
+
+    console.log(`Found ${builtPages.length} pages...`);
+    builtPages.forEach(p => console.log(`> ${p}`));
 
     await createEnvFile({ inputs, builtPages });
     const results = await runCypress({ utils, port });
