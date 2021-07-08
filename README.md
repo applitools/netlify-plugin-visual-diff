@@ -5,7 +5,7 @@ Ensure that your CSS still works in all form factors and browsers before deploym
 a visual history of your site. And do this without writing a single line of code using this plugin.
 
 This plugin runs the Applitools Eyes visual tests using Cypress and checks
-whether the build if the new build is visually different from the previous run.
+whether the new build is visually different from the previous run.
 
 If you decide that the visual tests should fail your site, then the visual changes
 will need to be reviewed and approved in the Applitools Test Manager.
