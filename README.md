@@ -1,4 +1,4 @@
-# netlify-plugin-visual-diff
+# Applitools Visual Diff Build Plugin
 
 Check for visual diffs before deploying your site, in various browsers and responsive widths.
 Ensure that your CSS still works in all form factors and browsers before deployment, and record
@@ -29,8 +29,6 @@ you probably would miss something anyway. Only a visual diff would ensure that
 1. If you're not already, register for Applitools Eyes at <https://applitools.com/register>
 1. Login to the Eyes Test Manager at <https://eyes.applitools.com/>
 1. Copy your Applitools API key from <https://eyes.applitools.com/>:
-
-![Getting the Applitools API key](./.github/applitools-api-key.png)
 
 1. Create an environment variable in your Netlify site's settings called `APPLITOOLS_API_KEY`:
    * Go to your site's page in Netlify
