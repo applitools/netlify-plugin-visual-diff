@@ -1,4 +1,4 @@
-# Applitools Visual Diff Build Plugin
+# Applitools Visual Diff Netlify Plugin
 
 Check for visual diffs before deploying your site, in various browsers and responsive widths.
 Ensure that your CSS still works in all form factors and browsers before deployment, and record
