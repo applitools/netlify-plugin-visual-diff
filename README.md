@@ -23,9 +23,6 @@ you probably would miss something anyway. Only a visual diff would ensure that
 
 ## Setup
 
-> NOTE: Before making these changes,
-> you’ll need to [enable the Build Plugins Beta](https://app.netlify.com/enable-beta?_ga=2.121904395.1859585997.1588375642-1789055271.1572451542).
-
 1. If you're not already, register for Applitools Eyes at <https://applitools.com/register>
 1. Login to the Eyes Test Manager at <https://eyes.applitools.com/>
 1. Copy your Applitools API key from <https://eyes.applitools.com/>:
