@@ -11,10 +11,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jlengstorf/netlify-plugin-visual-diff"
+    "url": "https://github.com/applitools/netlify-plugin-visual-diff"
   },
   "bugs": {
-    "url": "https://github.com/jlengstorf/netlify-plugin-visual-diff/issues"
+    "url": "https://github.com/applitools/netlify-plugin-visual-diff/issues"
   },
   "author": "",
   "license": "ISC",
