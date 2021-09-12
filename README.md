@@ -13,11 +13,11 @@ Once they’re approved, rebuilding the site will succeed without errors from th
 
 ## Why
 
-CSS is hard. And so is building sites that work across all form factors. Id you want to be sure
+CSS is hard. And so is building sites that work across all form factors. If you want to be sure
 that your CSS and HTML changes are not breaking your site, you should check it for visual consistency
 by running a visual test.
 
-Has that change in your CSS broken any of the tens of pages in your site? Only a visual diff can make sute
+Has that change in your CSS broken any of the tens of pages in your site? Only a visual diff can make sure
 that it hasn't, because going through all of them manually is certainly not an option. And if it was,
 you probably would miss something anyway. Only a visual diff would ensure that
 
